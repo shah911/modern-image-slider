@@ -2,31 +2,37 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import img1 from "../../public/modern Architecture.jpg";
+import img2 from "../../public/Gothic architecture.jpg";
+import img3 from "../../public/Greek Revival architecture.jpg";
+import img4 from "../../public/Islamic architecture.jpg";
+import img5 from "../../public/Byzantine architecture.jpg";
+import img6 from "../../public/Ancient Roman architecture.jpg";
 
 const data = [
   {
     title: "modern",
-    url: "/modern Architecture.jpg",
+    url: img1,
   },
   {
     title: "Gothic",
-    url: "/Gothic architecture.jpg",
+    url: img2,
   },
   {
     title: "Greek    Revival",
-    url: "/Greek Revival architecture.jpg",
+    url: img3,
   },
   {
     title: "Islamic",
-    url: "/Islamic architecture.jpg",
+    url: img4,
   },
   {
     title: "Byzantine",
-    url: "/Byzantine architecture.jpg",
+    url: img5,
   },
   {
     title: "Ancient    Roman",
-    url: "/Ancient Roman architecture.jpg",
+    url: img6,
   },
 ];
 
@@ -77,6 +83,7 @@ function Slider() {
   const [hasPrev, setHasPrev] = useState(false);
   const [hasNext, setHasNext] = useState(true);
   const [direction, setDirection] = useState("next");
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     setHasPrev(currentIndex > 0);
@@ -84,13 +91,23 @@ function Slider() {
   }, [currentIndex]);
 
   const handlePrev = () => {
-    setDirection("prev");
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+    if (!isAnimating) {
+      setDirection("prev");
+      setIsAnimating(true);
+      setCurrentIndex((prev) => Math.max(prev - 1, 0));
+    }
   };
 
   const handleNext = () => {
-    setDirection("next");
-    setCurrentIndex((prev) => Math.min(prev + 1, data.length - 1));
+    if (!isAnimating) {
+      setDirection("next");
+      setIsAnimating(true);
+      setCurrentIndex((prev) => Math.min(prev + 1, data.length - 1));
+    }
+  };
+
+  const handleAnimationComplete = () => {
+    setIsAnimating(false);
   };
 
   return (
@@ -108,6 +125,7 @@ function Slider() {
                   initial="initial"
                   animate="animate"
                   exit="exit"
+                  onAnimationComplete={handleAnimationComplete}
                 >
                   <h1 className="flex items-center justify-center z-10 absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
                     {item.title.split("").map((char, i) =>
@@ -132,6 +150,7 @@ function Slider() {
                   <Image
                     src={item.url}
                     alt={item.title}
+                    placeholder="blur"
                     priority={true}
                     fill
                     className="object-cover"
@@ -143,7 +162,7 @@ function Slider() {
       </div>
       <div className="flex items-center justify-between mt-4 2xl:mt-[1.5vw] w-[95%] mx-auto">
         <button
-          disabled={!hasPrev}
+          disabled={!hasPrev || isAnimating}
           onClick={handlePrev}
           className="uppercase disabled:opacity-50"
         >
@@ -170,7 +189,7 @@ function Slider() {
           </svg>
         </button>
         <button
-          disabled={!hasNext}
+          disabled={!hasNext || isAnimating}
           onClick={handleNext}
           className="uppercase disabled:opacity-50"
         >
