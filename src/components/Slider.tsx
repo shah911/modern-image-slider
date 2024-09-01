@@ -86,6 +86,13 @@ function Slider() {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    data.forEach((item) => {
+      const img = new window.Image();
+      img.src = item.url.src;
+    });
+  }, []);
+
+  useEffect(() => {
     setHasPrev(currentIndex > 0);
     setHasNext(currentIndex < data.length - 1);
   }, [currentIndex]);
@@ -150,7 +157,7 @@ function Slider() {
                   <Image
                     src={item.url}
                     alt={item.title}
-                    placeholder="blur"
+                    // placeholder="blur"
                     priority={true}
                     fill
                     className="object-cover"
