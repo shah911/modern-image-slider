@@ -114,36 +114,10 @@ function Slider() {
     <>
       <div className="relative h-[450px] 2xl:h-[80vh] overflow-hidden bg-black">
         {data.map((item, i) => (
-          <motion.div
+          <div
             key={i}
             className="absolute top-0 left-0 h-full w-full bg-black -z-10 hidden"
-            variants={variants}
-            custom={direction}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            onAnimationComplete={handleAnimationComplete}
           >
-            <h1 className="flex items-center justify-center z-10 absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
-              {item.title.split("").map((char, i) =>
-                char === " " ? (
-                  <span key={i}>&nbsp;</span>
-                ) : (
-                  <span key={i} className="overflow-hidden">
-                    <motion.span
-                      variants={heading}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                      custom={i}
-                      className="inline-flex whitespace-nowrap uppercase text-2xl md:text-4xl lg:text-5xl 2xl:text-[3vw] text-white"
-                    >
-                      {char}
-                    </motion.span>
-                  </span>
-                )
-              )}
-            </h1>
             <Image
               src={item.url}
               alt={item.title}
@@ -152,9 +126,9 @@ function Slider() {
               fill
               className="object-cover"
             />
-          </motion.div>
+          </div>
         ))}
-        <AnimatePresence initial={false} custom={direction}>
+        <AnimatePresence initial={false} custom={direction} mode="sync">
           {data.map(
             (item, i) =>
               i === currentIndex && (
