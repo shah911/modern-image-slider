@@ -177,7 +177,7 @@ function Slider() {
       </div>
       <div className="flex items-center justify-between mt-4 2xl:mt-[1.5vw] w-[95%] mx-auto">
         <button
-          disabled={!hasPrev || isAnimating}
+          disabled={!hasPrev}
           onClick={handlePrev}
           className="uppercase disabled:opacity-50"
         >
@@ -204,7 +204,7 @@ function Slider() {
           </svg>
         </button>
         <button
-          disabled={!hasNext || isAnimating}
+          disabled={!hasNext}
           onClick={handleNext}
           className="uppercase disabled:opacity-50"
         >
