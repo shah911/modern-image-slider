@@ -1,13 +1,18 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, PanInfo } from "framer-motion";
 import img1 from "../../public/modern Architecture.jpg";
 import img2 from "../../public/Gothic architecture.jpg";
 import img3 from "../../public/Greek Revival architecture.jpg";
 import img4 from "../../public/Islamic architecture.jpg";
 import img5 from "../../public/Byzantine architecture.jpg";
 import img6 from "../../public/Ancient Roman architecture.jpg";
+
+type OnDragEnd = (
+  e: MouseEvent | TouchEvent | PointerEvent,
+  info: PanInfo
+) => void;
 
 const data = [
   {
@@ -38,9 +43,11 @@ const data = [
 
 const variants = {
   initial: (direction: string) => ({
-    clipPath: direction === "next" ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
+    x: direction === "next" ? "20%" : "-20%",
+    clipPath: direction === "next" ? "inset(0 0 0 80%)" : "inset(0 80% 0 0)",
   }),
   animate: {
+    x: 0,
     clipPath: "inset(0 0 0 0)",
     transition: {
       duration: 1,
@@ -48,7 +55,7 @@ const variants = {
     },
   },
   exit: (direction: string) => ({
-    clipPath: direction === "next" ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)",
+    x: direction === "next" ? "-20%" : "20%",
     transition: {
       duration: 1,
       ease: [0.645, 0.075, 0.275, 0.995],
@@ -110,6 +117,17 @@ function Slider() {
     setIsAnimating(false);
   };
 
+  const onDragEnd: OnDragEnd = (e, info) => {
+    const DRAG_THRESHOLD = 100;
+    const x = info.offset.x;
+
+    if (x > DRAG_THRESHOLD && hasPrev) {
+      handlePrev();
+    } else if (x < -DRAG_THRESHOLD && hasNext) {
+      handleNext();
+    }
+  };
+
   return (
     <>
       <div className="relative h-[450px] 2xl:h-[80vh] overflow-hidden bg-black">
@@ -121,7 +139,6 @@ function Slider() {
             <Image
               src={item.url}
               alt={item.title}
-              placeholder="blur"
               priority={true}
               fill
               className="object-cover"
@@ -142,6 +159,12 @@ function Slider() {
                   exit="exit"
                   onAnimationComplete={handleAnimationComplete}
                 >
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    onDragEnd={onDragEnd}
+                    className="z-10 absolute h-full w-full top-0 left-0 cursor-grab active:cursor-grabbing"
+                  />
                   <h1 className="flex items-center justify-center z-10 absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
                     {item.title.split("").map((char, i) =>
                       char === " " ? (
